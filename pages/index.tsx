@@ -309,7 +309,7 @@ const Home: NextPage = () => {
       <div className='flex max-h-[calc(100vh-1rem)] overflow-y-hidden'>
         <section className='flex-1 p-4 pb-0'>
           <h2 className='font-bold mb-2'>My Drops</h2>
-          <ItemList items={drops} />
+          <ItemList items={drops} isEditable hasLink />
         </section>
 
         <section className='flex-1 p-4'>
