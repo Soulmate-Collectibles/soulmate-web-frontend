@@ -11,7 +11,7 @@ const editDrop = async (drop: any) => {
     });
     const json = await res.json();
     if (json.statusCode === 409) {
-      throw new Error('Drop already exists');
+      throw new Error(json.message);
     }
     return json;
   } catch (err) {
