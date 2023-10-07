@@ -8,8 +8,4 @@ export const routes: Route[] = [
     path: '/',
     name: 'Home',
   },
-  {
-    path: '/create-drop',
-    name: 'Create drop',
-  },
 ];
