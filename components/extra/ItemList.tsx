@@ -9,6 +9,7 @@ import { AiFillDelete, AiFillEdit, AiOutlineDelete } from 'react-icons/ai';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
+import { AppTooltip } from '@components/tootlip/AppTooltip';
 
 export const EditDropSchema = z.object({
   title: z.string().min(4).max(30),
@@ -22,12 +23,14 @@ const ItemList = ({
   hasLink = false,
   loading = false,
   refetch,
+  isDeletable,
 }: {
   items: any[];
   loading: boolean;
   isEditable?: boolean;
   hasLink?: boolean;
   refetch?: () => Promise<any>;
+  isDeletable?: boolean;
 }) => {
   const [open, setOpen] = useState(false);
   const [editItem, setEditItem] = useState<any>({});
@@ -60,9 +63,19 @@ const ItemList = ({
                           <AiFillEdit />
                         </button>
                       ) : null}
-                      <button className='cursor-not-allowed'>
-                        <AiOutlineDelete />
-                      </button>
+                      {isDeletable ? (
+                        <AppTooltip
+                          content={
+                            <p className='font-normal'>
+                              This functionality is yet to be implemented
+                            </p>
+                          }
+                        >
+                          <button className='cursor-not-allowed'>
+                            <AiOutlineDelete />
+                          </button>
+                        </AppTooltip>
+                      ) : null}
                     </div>
                   </CardTitle>
                 </CardHeader>
