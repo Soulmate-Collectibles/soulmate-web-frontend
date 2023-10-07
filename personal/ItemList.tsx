@@ -20,6 +20,7 @@ const ItemList = ({
   refetch?: () => Promise<any>;
 }) => {
   const [open, setOpen] = useState(false);
+  const [editItem, setEditItem] = useState<{}>({});
   return (
     <div className='flex flex-col max-h-full h-[calc(100%-32px)]'>
       <ScrollArea className='w-full h-[calc(100%-3rem)] rounded-md'>
@@ -31,6 +32,7 @@ const ItemList = ({
                   <p>{item.title}</p>
                   {isEditable ? (
                     <EditDrop
+                      key={item.id}
                       item={item}
                       open={open}
                       setOpen={setOpen}

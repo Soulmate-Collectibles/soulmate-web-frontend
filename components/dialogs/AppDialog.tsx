@@ -14,18 +14,19 @@ interface AppDialogProps {
   dialogFooter?: JSX.Element;
   open?: boolean | undefined;
   setOpen?: (open: boolean) => void;
+  key: string;
 }
 
 const AppDialog = ({
   dialogTrigger,
   dialogTitle,
-  dialogFooter,
   children,
   open = undefined,
   setOpen,
+  key,
 }: AppDialogProps) => {
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={setOpen} key={key}>
       <DialogTrigger>{dialogTrigger}</DialogTrigger>
       <DialogContent>
         <DialogHeader>

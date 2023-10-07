@@ -14,6 +14,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { DialogFooter } from '@components/ui/dialog';
+import { useCreateDrop } from 'hooks/mutation/drops/useCreateDrop';
 
 const CreateDropSchema = z.object({
   title: z.string().min(4).max(30),
@@ -24,9 +25,11 @@ const CreateDropSchema = z.object({
 const CreateDrop = ({
   open = false,
   setOpen,
+  refetch,
 }: {
   open: boolean;
   setOpen: (open: boolean) => void;
+  refetch?: () => Promise<any>;
 }) => {
   const form = useForm<z.infer<typeof CreateDropSchema>>({
     resolver: zodResolver(CreateDropSchema),
@@ -37,10 +40,16 @@ const CreateDrop = ({
     },
   });
 
+  const mutation = useCreateDrop({
+    onSuccess: async () => {
+      form.reset();
+      await refetch?.();
+      setOpen(false);
+    },
+  });
+
   function onSubmit(data: z.infer<typeof CreateDropSchema>) {
-    console.log('hey');
-    form.reset();
-    setOpen(false);
+    mutation.mutate(data);
   }
 
   return (

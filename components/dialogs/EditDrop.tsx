@@ -28,15 +28,19 @@ const EditDropSchema = z.object({
 });
 
 const EditDrop = ({
+  key,
   item,
   open = false,
   setOpen,
   refetch,
+  onClick,
 }: {
+  key: string;
   item: any;
   open: boolean;
   setOpen: (open: boolean) => void;
   refetch?: () => Promise<any>;
+  onClick?: () => void;
 }) => {
   const form = useForm<z.infer<typeof EditDropSchema>>({
     resolver: zodResolver(EditDropSchema),
@@ -49,6 +53,7 @@ const EditDrop = ({
 
   const mutation = useEditDrop({
     onSuccess: async () => {
+      console.log(mutation);
       await refetch?.();
       setOpen(false);
     },
@@ -60,9 +65,17 @@ const EditDrop = ({
 
   return (
     <AppDialog
+      key={key}
       dialogTitle='Edit your drop'
       dialogTrigger={
-        <button>
+        <button
+          onClick={() => {
+            console.log('hey', item);
+            form.setValue('title', item.title);
+            form.setValue('description', item.description);
+            form.setValue('image', item.image);
+          }}
+        >
           <AiFillEdit />
         </button>
       }

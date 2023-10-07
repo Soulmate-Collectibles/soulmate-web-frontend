@@ -165,7 +165,7 @@ const Drops = () => {
       <div className='flex justify-between items-start'>
         <h2 className='font-bold mb-2'>My Drops</h2>
         <button className='flex items-center justify-center gap-1 pr-4'>
-          <CreateDrop open={open} setOpen={setOpen} />
+          <CreateDrop open={open} setOpen={setOpen} refetch={refetch} />
         </button>
       </div>
       <ItemList

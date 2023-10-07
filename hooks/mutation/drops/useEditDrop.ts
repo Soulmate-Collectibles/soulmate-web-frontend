@@ -10,14 +10,23 @@ const editDrop = async (drop: any) => {
       body: JSON.stringify(drop),
     });
     const json = await res.json();
+    if (json.statusCode === 409) {
+      throw new Error('Drop already exists');
+    }
     return json;
   } catch (err) {
-    console.log('Error editing drop', err);
+    throw err;
   }
 };
 
-const useEditDrop = ({ onSuccess }: { onSuccess?: () => void }) => {
-  return useMutation({ mutationFn: editDrop, onSuccess });
+const useEditDrop = ({
+  onSuccess,
+  onError,
+}: {
+  onSuccess?: () => void;
+  onError?: () => void;
+}) => {
+  return useMutation({ mutationFn: editDrop, onSuccess, onError });
 };
 
 export { useEditDrop };
