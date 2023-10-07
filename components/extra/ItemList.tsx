@@ -34,11 +34,6 @@ const ItemList = ({
 
   const form = useForm<z.infer<typeof EditDropSchema>>({
     resolver: zodResolver(EditDropSchema),
-    /* defaultValues: {
-      title: '',
-      description: '',
-      image: '',
-    }, */
   });
 
   return (
@@ -65,7 +60,7 @@ const ItemList = ({
                           <AiFillEdit />
                         </button>
                       ) : null}
-                      <button>
+                      <button className='cursor-not-allowed'>
                         <AiOutlineDelete />
                       </button>
                     </div>
