@@ -1,11 +1,14 @@
 import { CreateDrop } from '@components/dialogs/CreateDrop';
 import { useDrops } from 'hooks/query/drops/useDrops';
-import ItemList from 'personal/ItemList';
+import ItemList from '@components/extra/ItemList';
 import { useState } from 'react';
+import { AiFillDelete } from 'react-icons/ai';
 
 const Drops = () => {
   const [open, setOpen] = useState(false);
   const { isLoading, data, refetch } = useDrops();
+
+  console.log(data?.drops);
 
   const drops = [
     {
@@ -163,10 +166,20 @@ const Drops = () => {
   return (
     <section className='flex-1 p-4 pb-0'>
       <div className='flex justify-between items-start'>
-        <h2 className='font-bold mb-2'>My Drops</h2>
-        <button className='flex items-center justify-center gap-1 pr-4'>
+        <div className='mb-2'>
+          <h2 className='scroll-m-20 text-4xl font-bold tracking-tight'>
+            My Drops
+          </h2>
+          <p className='text-lg text-muted-foreground'>
+            All the drops you&apos;ve created
+          </p>
+        </div>
+        <div className='flex flex-col items-end justify-center gap-1 pr-4'>
+          <button className='flex justify-center items-center gap-1 pr-4 hover:underline'>
+            <AiFillDelete /> Delete all
+          </button>
           <CreateDrop open={open} setOpen={setOpen} refetch={refetch} />
-        </button>
+        </div>
       </div>
       <ItemList
         loading={isLoading}

@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { Logo } from '../logos/Logo';
 import { useRouter } from 'next/router';
 import { useMount } from 'hooks/useMount';
-import { Connecting } from '../personal/Connecting';
+import { Connecting } from '@components/extra/Connecting';
 import { useState } from 'react';
 import { NavBar } from '@components/sections/Navbar';
 import { Drops } from '@components/sections/Drops';
@@ -22,7 +22,6 @@ const Home: NextPage = () => {
       push('/login');
     },
   });
-  console.log(status);
   const { mounted } = useMount(() => router.replace(router.asPath));
 
   if (!mounted.current) return null;
@@ -37,13 +36,13 @@ const Home: NextPage = () => {
   }
 
   return (
-    <div>
+    <>
       <NavBar />
       <div className='flex h-[calc(100vh-1rem)] overflow-y-hidden'>
         <Drops />
         <Poaps />
       </div>
-    </div>
+    </>
   );
 };
 

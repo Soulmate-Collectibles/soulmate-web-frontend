@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { EditDrop } from '@components/dialogs/EditDrop';
 import { useState } from 'react';
-import { AiFillEdit } from 'react-icons/ai';
+import { AiFillDelete, AiFillEdit, AiOutlineDelete } from 'react-icons/ai';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
@@ -43,7 +43,7 @@ const ItemList = ({
 
   return (
     <>
-      <div className='flex flex-col max-h-full h-[calc(100%-32px)]'>
+      <div className='flex flex-col max-h-full h-[calc(100%-64px)]'>
         <ScrollArea className='w-full h-[calc(100%-3rem)] rounded-md'>
           {!loading ? (
             items?.map((item) => (
@@ -51,19 +51,24 @@ const ItemList = ({
                 <CardHeader>
                   <CardTitle className='flex justify-between'>
                     <p>{item.title}</p>
-                    {isEditable ? (
-                      <button
-                        onClick={() => {
-                          setEditItem(item);
-                          form.setValue('title', item.title);
-                          form.setValue('description', item.description);
-                          form.setValue('image', item.image);
-                          setOpen(true);
-                        }}
-                      >
-                        <AiFillEdit />
+                    <div className='flex gap-2'>
+                      {isEditable ? (
+                        <button
+                          onClick={() => {
+                            setEditItem(item);
+                            form.setValue('title', item.title);
+                            form.setValue('description', item.description);
+                            form.setValue('image', item.image);
+                            setOpen(true);
+                          }}
+                        >
+                          <AiFillEdit />
+                        </button>
+                      ) : null}
+                      <button>
+                        <AiOutlineDelete />
                       </button>
-                    ) : null}
+                    </div>
                   </CardTitle>
                 </CardHeader>
                 <CardContent className='flex'>
@@ -83,7 +88,7 @@ const ItemList = ({
                     <p className='text-sm m-0'>{item.description}</p>
                     {hasLink ? (
                       <Link
-                        href='https://www.google.com'
+                        href={`/mint/${item.mintlinks[0].id}`}
                         className='text-sm color-[#0000FF] underline'
                         target='_blank'
                       >

@@ -1,4 +1,4 @@
-import ItemList from 'personal/ItemList';
+import ItemList from '@components/extra/ItemList';
 
 const Poaps = () => {
   const poaps = [
@@ -8,7 +8,14 @@ const Poaps = () => {
 
   return (
     <section className='flex-1 p-4'>
-      <h2 className='font-bold mb-2'>My POAPs</h2>
+      <div className='mb-2'>
+        <h2 className='scroll-m-20 text-4xl font-bold tracking-tight'>
+          My POAPs
+        </h2>
+        <p className='text-lg text-muted-foreground font-sans'>
+          All the POAPs you&apos;re linked to
+        </p>
+      </div>
       <ItemList loading={false} items={poaps} />
     </section>
   );
