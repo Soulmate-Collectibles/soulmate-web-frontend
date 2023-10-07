@@ -9,15 +9,26 @@ const createDrop = async (drop: any) => {
       },
       body: JSON.stringify(drop),
     });
+    if (!res.ok) {
+      const json = await res.json();
+      console.log(json);
+      throw new Error(res.statusText);
+    }
     const json = await res.json();
     return json;
   } catch (err) {
-    console.log('Error editing drop', err);
+    throw err;
   }
 };
 
-const useCreateDrop = ({ onSuccess }: { onSuccess?: () => void }) => {
-  return useMutation({ mutationFn: createDrop, onSuccess });
+const useCreateDrop = ({
+  onSuccess,
+  onError,
+}: {
+  onSuccess?: () => void;
+  onError?: () => void;
+}) => {
+  return useMutation({ mutationFn: createDrop, onSuccess, onError });
 };
 
 export { useCreateDrop };

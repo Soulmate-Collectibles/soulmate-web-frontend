@@ -46,10 +46,19 @@ const CreateDrop = ({
       await refetch?.();
       setOpen(false);
     },
+    onError: async () => {
+      console.log('AAAAAAAAAAAAAAA');
+    },
   });
 
   function onSubmit(data: z.infer<typeof CreateDropSchema>) {
-    mutation.mutate(data);
+    mutation.mutate({
+      ...data,
+      totalAmount: '10',
+      creatorAddress: '0x5B38Da6a701c568545dCfcB03FcB875f56beddC4',
+      startDate: new Date().toISOString(),
+      endDate: new Date().toISOString(),
+    });
   }
 
   return (
