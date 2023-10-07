@@ -1,35 +1,25 @@
-import { Button } from '@components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@components/ui/card';
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@components/ui/dialog';
-import { Input } from '@components/ui/input';
-import { Label } from '@components/ui/label';
 import { ScrollArea } from '@components/ui/scroll-area';
-import { Textarea } from '@components/ui/textarea';
 import { Skeleton } from '@components/ui/skeleton';
 import Image from 'next/image';
 import Link from 'next/link';
-import { AiFillEdit } from 'react-icons/ai';
-import { Edit } from 'lucide-react';
 import { EditDrop } from '@components/dialogs/EditDrop';
+import { useState } from 'react';
 
 const ItemList = ({
   items,
   isEditable = false,
   hasLink = false,
   loading = false,
+  refetch,
 }: {
   items: any[];
   loading: boolean;
   isEditable?: boolean;
   hasLink?: boolean;
+  refetch?: () => Promise<any>;
 }) => {
+  const [open, setOpen] = useState(false);
   return (
     <div className='flex flex-col max-h-full h-[calc(100%-32px)]'>
       <ScrollArea className='w-full h-[calc(100%-3rem)] rounded-md'>
@@ -39,7 +29,14 @@ const ItemList = ({
               <CardHeader>
                 <CardTitle className='flex justify-between'>
                   <p>{item.title}</p>
-                  {isEditable ? <EditDrop item={item} /> : null}
+                  {isEditable ? (
+                    <EditDrop
+                      item={item}
+                      open={open}
+                      setOpen={setOpen}
+                      refetch={refetch}
+                    />
+                  ) : null}
                 </CardTitle>
               </CardHeader>
               <CardContent className='flex'>

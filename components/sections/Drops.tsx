@@ -1,47 +1,11 @@
 import { CreateDrop } from '@components/dialogs/CreateDrop';
-import { Button } from '@components/ui/button';
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@components/ui/dialog';
-import { Input } from '@components/ui/input';
-import { Label } from '@components/ui/label';
-import { Textarea } from '@components/ui/textarea';
-import { useDrops } from 'hooks/query/useDrops';
+import { useDrops } from 'hooks/query/drops/useDrops';
 import ItemList from 'personal/ItemList';
 import { useState } from 'react';
-import { AiFillPlusCircle } from 'react-icons/ai';
 
 const Drops = () => {
   const [open, setOpen] = useState(false);
-  const { isLoading, data } = useDrops();
-  console.log(data);
-
-  /* useEffect(() => {
-    if (mounted) {
-      setLoading(true);
-      // fetch user from localhost:3000/api/user
-      fetch(
-        'http://localhost:3001/users/0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2'
-      )
-        .then((res) => res.json())
-        .then((data) => {
-          console.log(data);
-
-          setUser(data);
-        })
-        .catch((err) => {
-          console.log(err);
-        })
-        .finally(() => {
-          setLoading(false);
-        });
-    }
-  }, [mounted]); */
+  const { isLoading, data, refetch } = useDrops();
 
   const drops = [
     {
@@ -204,7 +168,13 @@ const Drops = () => {
           <CreateDrop open={open} setOpen={setOpen} />
         </button>
       </div>
-      <ItemList loading={isLoading} items={data?.drops} isEditable hasLink />
+      <ItemList
+        loading={isLoading}
+        items={data?.drops}
+        isEditable
+        hasLink
+        refetch={refetch}
+      />
     </section>
   );
 };
