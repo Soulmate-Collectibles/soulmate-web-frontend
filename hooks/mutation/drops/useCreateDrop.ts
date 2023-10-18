@@ -1,13 +1,14 @@
 import { useMutation } from 'react-query';
 
 const createDrop = async (drop: any) => {
+  const jwt = window.localStorage.getItem('jwt');
   try {
     const res = await fetch(`http://localhost:3001/drops`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        Authorization: `Bearer ${jwt}`,
       },
-      body: JSON.stringify(drop),
+      body: drop,
     });
     if (!res.ok) {
       throw new Error(res.statusText);

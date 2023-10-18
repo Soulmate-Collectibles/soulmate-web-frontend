@@ -1,3 +1,5 @@
+'use client';
+
 import { Button } from '@components/ui/button';
 import { Input } from '@components/ui/input';
 import { Textarea } from '@components/ui/textarea';
@@ -6,6 +8,7 @@ import { AppDialog } from './AppDialog';
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -16,11 +19,30 @@ import * as z from 'zod';
 import { DialogFooter } from '@components/ui/dialog';
 import { useToast } from '@components/ui/use-toast';
 import { useCreateDrop } from 'hooks/mutation/drops/useCreateDrop';
+import {
+  ACCEPTED_IMAGE_TYPES,
+  MAX_FILE_SIZE,
+} from '@constants/file-validation';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@components/ui/popover';
+import { cn } from '@utils';
+import { format } from 'date-fns';
+import { CalendarIcon } from 'lucide-react';
+import { Calendar } from '@components/ui/calendar';
 
 const CreateDropSchema = z.object({
   title: z.string().min(4).max(30),
   description: z.string().max(300),
-  image: z.string(),
+  image: z.any().refine((file) => file?.size <= MAX_FILE_SIZE, {
+    message: 'File size should be less than 4MB',
+    path: ['file'],
+  }),
+  startDate: z.date(),
+  endDate: z.date(),
+  totalAmount: z.number(),
 });
 
 const CreateDrop = ({
@@ -38,6 +60,7 @@ const CreateDrop = ({
       title: '',
       description: '',
       image: '',
+      totalAmount: 10,
     },
   });
   const { toast } = useToast();
@@ -57,15 +80,15 @@ const CreateDrop = ({
     },
   });
 
+  console.log(form.formState.errors);
+
   function onSubmit(data: z.infer<typeof CreateDropSchema>) {
     console.log(data);
 
     mutation.mutate({
       ...data,
-      totalAmount: '10',
+      totalAmount: `${data.totalAmount}`,
       creatorAddress: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266',
-      startDate: new Date().toISOString(),
-      endDate: new Date().toISOString(),
     });
   }
 
@@ -118,16 +141,106 @@ const CreateDrop = ({
             <FormField
               control={form.control}
               name='image'
+              render={({ field }) => {
+                const { onChange, value, ...otherFieldProps } = field;
+                return (
+                  <FormItem className='grid grid-cols-4 items-center gap-4'>
+                    <FormLabel>Image</FormLabel>
+                    <FormControl>
+                      <Input
+                        type='file'
+                        autoComplete='off'
+                        accept='image/png, image/gif'
+                        className='col-span-3'
+                        onChange={(e) => {
+                          if (e.target.files?.[0]) {
+                            onChange(e.target.files[0]); // Send the File object to react-hook-form
+                          }
+                        }}
+                        {...otherFieldProps}
+                      />
+                    </FormControl>
+                  </FormItem>
+                );
+              }}
+            />
+            <FormField
+              control={form.control}
+              name='startDate'
               render={({ field }) => (
                 <FormItem className='grid grid-cols-4 items-center gap-4'>
-                  <FormLabel>Image</FormLabel>
-                  <FormControl>
-                    <Input
-                      /* type='file' */ autoComplete='off'
-                      className='col-span-3'
-                      {...field}
-                    />
-                  </FormControl>
+                  <FormLabel>Start date</FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant={'outline'}
+                          className={cn(
+                            'col-span-3',
+                            !field.value && 'text-muted-foreground'
+                          )}
+                        >
+                          {field.value ? (
+                            format(field.value, 'PPP')
+                          ) : (
+                            <span>Pick a date</span>
+                          )}
+                          <CalendarIcon className='ml-auto h-4 w-4 opacity-50' />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className='w-auto p-0' align='start'>
+                      <Calendar
+                        mode='single'
+                        selected={field.value}
+                        onSelect={field.onChange}
+                        disabled={(date) =>
+                          date > new Date() || date < new Date('1900-01-01')
+                        }
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name='endDate'
+              render={({ field }) => (
+                <FormItem className='grid grid-cols-4 items-center gap-4'>
+                  <FormLabel>End date</FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant={'outline'}
+                          className={cn(
+                            'col-span-3',
+                            !field.value && 'text-muted-foreground'
+                          )}
+                        >
+                          {field.value ? (
+                            format(field.value, 'PPP')
+                          ) : (
+                            <span>Pick a date</span>
+                          )}
+                          <CalendarIcon className='ml-auto h-4 w-4 opacity-50' />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className='w-auto p-0' align='start'>
+                      <Calendar
+                        mode='single'
+                        selected={field.value}
+                        onSelect={field.onChange}
+                        disabled={(date) =>
+                          date > new Date() || date < new Date('1900-01-01')
+                        }
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
                 </FormItem>
               )}
             />
