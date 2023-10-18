@@ -29,7 +29,7 @@ const Drops = () => {
               My Drops
             </h2>
             <p className='text-lg text-muted-foreground'>
-              All the drops you&apos;ve created
+              All the drops you&apos;ve createdasdasd
             </p>
           </div>
           <div className='flex flex-col items-end justify-center gap-1 pr-4'>

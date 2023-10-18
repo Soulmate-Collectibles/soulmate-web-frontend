@@ -10,8 +10,6 @@ const createDrop = async (drop: any) => {
       body: JSON.stringify(drop),
     });
     if (!res.ok) {
-      const json = await res.json();
-      console.log(json);
       throw new Error(res.statusText);
     }
     const json = await res.json();

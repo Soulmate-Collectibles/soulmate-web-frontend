@@ -3,7 +3,7 @@ import { useQuery } from 'react-query';
 const fetchDrops = async () => {
   try {
     const res = await fetch(
-      'http://localhost:3001/users/0x5B38Da6a701c568545dCfcB03FcB875f56beddC4'
+      'http://localhost:3001/users/0xf5aBFa16a9B44Bb2a1ece4B08dd85Ab68f5a282f'
     );
     const json = await res.json();
     return json;

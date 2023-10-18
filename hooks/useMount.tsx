@@ -1,11 +1,11 @@
 import { useEffect, useRef } from 'react';
 
-const useMount = (fn: () => void) => {
+const useMount = (fn?: () => void) => {
   const mounted = useRef(false);
 
   useEffect(() => {
     mounted.current = true;
-    fn();
+    fn?.();
     return () => {
       mounted.current = false;
     };

@@ -10,6 +10,7 @@ import { useState } from 'react';
 import { NavBar } from '@components/sections/Navbar';
 import { Drops } from '@components/sections/Drops';
 import { Poaps } from '@components/sections/Poaps';
+import Head from 'next/head';
 
 const Home: NextPage = () => {
   const { push, query, ...router } = useRouter();
@@ -37,7 +38,9 @@ const Home: NextPage = () => {
 
   return (
     <>
-      <NavBar />
+      <Head>
+        <title>Home | Soulmate Collectibles</title>
+      </Head>
       <div className='flex h-[calc(100vh-1rem)] overflow-y-hidden'>
         <Drops />
         <Poaps />

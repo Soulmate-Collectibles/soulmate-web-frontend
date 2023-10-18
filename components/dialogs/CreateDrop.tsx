@@ -14,6 +14,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { DialogFooter } from '@components/ui/dialog';
+import { useToast } from '@components/ui/use-toast';
 import { useCreateDrop } from 'hooks/mutation/drops/useCreateDrop';
 
 const CreateDropSchema = z.object({
@@ -39,11 +40,16 @@ const CreateDrop = ({
       image: '',
     },
   });
+  const { toast } = useToast();
 
   const mutation = useCreateDrop({
     onSuccess: async () => {
-      form.reset();
       await refetch?.();
+      toast({
+        title: 'Drop created',
+        description: `Drop '${form.getValues('title')}' created successfully!`,
+      });
+      form.reset();
       setOpen(false);
     },
     onError: async () => {
@@ -52,10 +58,12 @@ const CreateDrop = ({
   });
 
   function onSubmit(data: z.infer<typeof CreateDropSchema>) {
+    console.log(data);
+
     mutation.mutate({
       ...data,
       totalAmount: '10',
-      creatorAddress: '0x5B38Da6a701c568545dCfcB03FcB875f56beddC4',
+      creatorAddress: '0xf5aBFa16a9B44Bb2a1ece4B08dd85Ab68f5a282f',
       startDate: new Date().toISOString(),
       endDate: new Date().toISOString(),
     });
@@ -67,9 +75,9 @@ const CreateDrop = ({
       setOpen={setOpen}
       dialogTitle='Create your drop'
       dialogTrigger={
-        <button className='flex items-center justify-center gap-1 pr-4 hover:underline'>
+        <div className='flex items-center justify-center gap-1 pr-4 hover:underline cursor-pointer'>
           <AiFillPlusCircle /> Create new drop
-        </button>
+        </div>
       }
     >
       <div className='grid gap-4 py-4'>
@@ -124,7 +132,9 @@ const CreateDrop = ({
               )}
             />
             <DialogFooter className='flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2 mt-5'>
-              <Button type='submit'>Save drop</Button>
+              <Button disabled={mutation.isLoading} type='submit'>
+                Save drop
+              </Button>
             </DialogFooter>
           </form>
         </Form>

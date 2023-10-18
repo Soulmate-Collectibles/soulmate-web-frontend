@@ -32,7 +32,6 @@ const EditDrop = ({
 }) => {
   const mutation = useEditDrop({
     onSuccess: async () => {
-      console.log(mutation);
       await refetch?.();
       setOpen(false);
     },

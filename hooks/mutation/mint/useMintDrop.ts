@@ -1,12 +1,14 @@
 import { useMutation } from 'react-query';
 
-const deleteAllDrops = async (address: string) => {
+const mintDrop = async (mint: any) => {
+  console.log(mint);
   try {
-    const res = await fetch(`http://localhost:3001/drops/${address}`, {
-      method: 'DELETE',
+    const res = await fetch(`http://localhost:3001/mintlinks/${mint.id}`, {
+      method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
       },
+      body: JSON.stringify(mint),
     });
     if (!res.ok) {
       throw new Error(res.statusText);
@@ -16,14 +18,14 @@ const deleteAllDrops = async (address: string) => {
   }
 };
 
-const useDeleteAllDrops = ({
+const useMintDrop = ({
   onSuccess,
   onError,
 }: {
   onSuccess?: () => void;
   onError?: () => void;
 }) => {
-  return useMutation({ mutationFn: deleteAllDrops, onSuccess, onError });
+  return useMutation({ mutationFn: mintDrop, onSuccess, onError });
 };
 
-export { useDeleteAllDrops };
+export { useMintDrop };

@@ -71,9 +71,9 @@ const ItemList = ({
                             </p>
                           }
                         >
-                          <button className='cursor-not-allowed'>
+                          <div className='cursor-not-allowed'>
                             <AiOutlineDelete />
-                          </button>
+                          </div>
                         </AppTooltip>
                       ) : null}
                     </div>
@@ -98,7 +98,6 @@ const ItemList = ({
                       <Link
                         href={`/mint/${item.mintlinks[0].id}`}
                         className='text-sm color-[#0000FF] underline'
-                        target='_blank'
                       >
                         Access mintlink
                       </Link>

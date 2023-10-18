@@ -9,11 +9,9 @@ const editDrop = async (drop: any) => {
       },
       body: JSON.stringify(drop),
     });
-    const json = await res.json();
-    if (json.statusCode === 409) {
-      throw new Error(json.message);
+    if (!res.ok) {
+      throw new Error(res.statusText);
     }
-    return json;
   } catch (err) {
     throw err;
   }

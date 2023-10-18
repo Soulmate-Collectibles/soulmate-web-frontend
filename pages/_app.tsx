@@ -19,6 +19,9 @@ import {
 import { publicProvider } from 'wagmi/providers/public';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { useState } from 'react';
+import { useRouter } from 'next/router';
+import { NavBar } from '@components/sections/Navbar';
+import { Toaster } from '@components/ui/toaster';
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [
@@ -48,11 +51,27 @@ const wagmiConfig = createConfig({
 
 function MyApp({ Component, pageProps }: AppProps) {
   const [queryClient] = useState(() => new QueryClient());
+  const router = useRouter();
+
+  if (router.pathname === '/login') {
+    return (
+      <QueryClientProvider client={queryClient}>
+        <WagmiConfig config={wagmiConfig}>
+          <RainbowKitProvider chains={chains} theme={midnightTheme()}>
+            <Component {...pageProps} />
+          </RainbowKitProvider>
+        </WagmiConfig>
+      </QueryClientProvider>
+    );
+  }
+
   return (
     <QueryClientProvider client={queryClient}>
       <WagmiConfig config={wagmiConfig}>
         <RainbowKitProvider chains={chains} theme={midnightTheme()}>
+          <NavBar />
           <Component {...pageProps} />
+          <Toaster />
         </RainbowKitProvider>
       </WagmiConfig>
     </QueryClientProvider>
