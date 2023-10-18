@@ -59,6 +59,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         <WagmiConfig config={wagmiConfig}>
           <RainbowKitProvider chains={chains} theme={midnightTheme()}>
             <Component {...pageProps} />
+            <Toaster />
           </RainbowKitProvider>
         </WagmiConfig>
       </QueryClientProvider>

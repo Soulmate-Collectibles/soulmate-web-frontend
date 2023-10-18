@@ -18,16 +18,16 @@ const Home: NextPage = () => {
     {} as any
   );
   const [loading, setLoading] = useState(false);
-  const { status } = useAccount({
+  /* const { status } = useAccount({
     onDisconnect: () => {
       push('/login');
     },
-  });
+  }); */
   const { mounted } = useMount(() => router.replace(router.asPath));
 
   if (!mounted.current) return null;
 
-  if (status === 'disconnected') {
+  /* if (status === 'disconnected') {
     push('/login');
     return null;
   }
@@ -35,7 +35,7 @@ const Home: NextPage = () => {
   if (status !== 'connected') {
     return <Connecting />;
   }
-
+ */
   return (
     <>
       <Head>

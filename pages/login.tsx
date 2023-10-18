@@ -3,18 +3,28 @@ import logo from '@images/Logo.png';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useAccount } from 'wagmi';
 import { useRouter } from 'next/router';
+import { useRouter as useNavRouter } from 'next/navigation';
 import { useMount } from 'hooks/useMount';
 import Head from 'next/head';
 import { Button } from '@components/ui/button';
 import { useEffect, useState } from 'react';
 import { ethers } from 'ethers';
+import { useGetNonce } from 'hooks/query/user/useGetNonce';
+import { useCreateUser } from 'hooks/mutation/user/useCreateUser';
+import { useToast } from '@components/ui/use-toast';
 
 const Login = () => {
+  const { toast } = useToast();
   const router = useRouter();
+  const navRouter = useNavRouter();
   const { mounted } = useMount(() => router.replace(router.asPath));
   const [address, setAddress] = useState('');
   const [signedMessage, setSignedMessage] = useState('');
   const [message, setMessage] = useState('');
+  const [txSigner, setTxSigner] = useState<ethers.Signer>();
+
+  const { isLoading, refetch: getNonce } = useGetNonce(address);
+  const mutation = useCreateUser();
 
   const { isConnecting } = useAccount({
     onConnect: () => {
@@ -24,37 +34,53 @@ const Login = () => {
     },
   });
 
+  const { address: accountAddress } = useAccount();
+
   const getAccountInfo = async () => {
-    // Ensure MetaMask or other web3 provider is installed
     if (typeof window.ethereum !== 'undefined') {
-      const provider = new ethers.BrowserProvider(window.ethereum);
+      const provider = new ethers.BrowserProvider(
+        window.ethereum as ethers.Eip1193Provider
+      );
       const signer = await provider.getSigner();
+      setTxSigner(signer);
 
-      const address = await signer.getAddress();
-
-      const nonce = 'asdasd'; // Assuming you have the getNonce function defined elsewhere
-
-      const message = `This nonce is signed using metamask ${nonce}`;
-      const signedMessage = await signer.signMessage(message);
-
-      console.log(address, signedMessage, message);
-
-      setAddress(address);
-      setMessage(message);
-      setSignedMessage(signedMessage);
+      const signerAddress = await signer.getAddress();
+      setAddress(signerAddress);
     } else {
-      console.log('MetaMask (or another web3 provider) is not installed');
+      toast({
+        title: 'Houston, tenemos un problema',
+        description: `No se ha detectado Metamask en tu navegador`,
+      });
     }
   };
 
-  const getAddres = async () => {
-    if (window.ethereum !== undefined) {
-      const accounts = await window.ethereum.request({
-        method: 'eth_requestAccounts',
-      });
-      console.log(accounts);
-    }
-  };
+  useEffect(() => {
+    const getAccount = async () => {
+      if (address) {
+        const { data: response } = await getNonce();
+        if (response && response.nonce) {
+          setMessage(response.nonce);
+        } else {
+          await mutation.mutateAsync({ address });
+          setMessage(mutation.data?.nonce);
+        }
+
+        try {
+          const signedMessage = await txSigner?.signMessage(response.nonce);
+          if (signedMessage) navRouter.push('/');
+        } catch (e) {
+          toast({
+            title: 'Houston, tenemos un problema',
+            description: 'Se ha rechazado la firma del mensaje',
+          });
+        }
+
+        console.log('account address', accountAddress);
+      }
+    };
+    getAccount();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [address, router]);
 
   if (!mounted.current) return null;
 
@@ -72,7 +98,9 @@ const Login = () => {
           {/* <ConnectButton
             label={isConnecting ? 'Conectando...' : 'Inicia sesión'}
           /> */}
-          <Button onClick={getAccountInfo}>Iniciar sesión</Button>
+          <Button onClick={getAccountInfo} disabled={isLoading}>
+            Iniciar sesión
+          </Button>
         </div>
       </div>
     </>

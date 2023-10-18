@@ -54,23 +54,12 @@ const MintPage = () => {
     error: mintError,
   } = useContractWrite(contractWriteConfig);
 
-  const { data: totalSupplyData } = useContractRead({
-    ...contractConfig,
-    functionName: 'totalSupply',
-    watch: true,
-  });
-
   const {
     data: txData,
     isSuccess: isMinted,
     error: txError,
   } = useWaitForTransaction({
     hash: mintData?.hash,
-  });
-
-  const [buttonProps, setButtonProps] = useState({
-    loading: false,
-    text: 'Mint drop',
   });
 
   const mintDrop = () => {
