@@ -1,6 +1,6 @@
 import { useMutation } from 'react-query';
 
-const createDrop = async (drop: any) => {
+const createDrop = async (drop: FormData) => {
   const jwt = window.localStorage.getItem('jwt');
   try {
     const res = await fetch(`http://localhost:3001/drops`, {

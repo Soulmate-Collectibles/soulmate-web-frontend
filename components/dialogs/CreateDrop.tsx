@@ -83,13 +83,33 @@ const CreateDrop = ({
   console.log(form.formState.errors);
 
   function onSubmit(data: z.infer<typeof CreateDropSchema>) {
-    console.log(data);
+    const formData = new FormData();
 
-    mutation.mutate({
-      ...data,
-      totalAmount: `${data.totalAmount}`,
-      creatorAddress: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266',
-    });
+    // Append the image to formData
+    if (data.image && data.image.size > 0) {
+      formData.append('image', data.image);
+    }
+
+    // Append other fields
+    for (let key in data) {
+      if (key !== 'image') {
+        // Exclude the image since we already appended it
+        if (['startDate', 'endDate'].includes(key)) {
+          // format to ISO 8601 date string
+          formData.append(key, data[key as keyof typeof data].toISOString());
+        } else {
+          formData.append(key, data[key as keyof typeof data]);
+        }
+      }
+    }
+
+    formData.set('totalAmount', `${data.totalAmount}`);
+    formData.set(
+      'creatorAddress',
+      '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266'
+    );
+
+    mutation.mutate(formData);
   }
 
   return (
