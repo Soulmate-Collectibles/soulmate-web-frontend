@@ -84,7 +84,14 @@ const ItemList = ({
                     <>
                       <div className='shrink-0'>
                         <Image
-                          src={'/images/Logo.png'}
+                          src={
+                            (item.image as string).startsWith('ipfs://')
+                              ? (item.image as string).replace(
+                                  'ipfs://',
+                                  'https://ipfs.io/ipfs/'
+                                )
+                              : '/images/Logo.png'
+                          }
                           alt={item.title}
                           width={100}
                           height={100}
