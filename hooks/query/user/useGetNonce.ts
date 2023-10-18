@@ -1,4 +1,3 @@
-import { UUID } from 'crypto';
 import { useQuery } from 'react-query';
 
 const fetchNonceByAddress = async (address: string) => {
@@ -9,6 +8,7 @@ const fetchNonceByAddress = async (address: string) => {
       throw new Error(res.statusText);
     }
     const json = await res.json();
+    console.log('json', json);
     return json;
   } catch (err) {
     console.log('Error fetching drops', err);

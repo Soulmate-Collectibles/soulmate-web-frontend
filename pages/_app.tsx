@@ -22,6 +22,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { NavBar } from '@components/sections/Navbar';
 import { Toaster } from '@components/ui/toaster';
+import { AuthContextProvider } from '@context/auth/AuthContext';
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [
@@ -57,10 +58,10 @@ function MyApp({ Component, pageProps }: AppProps) {
     return (
       <QueryClientProvider client={queryClient}>
         <WagmiConfig config={wagmiConfig}>
-          <RainbowKitProvider chains={chains} theme={midnightTheme()}>
+          <AuthContextProvider>
             <Component {...pageProps} />
             <Toaster />
-          </RainbowKitProvider>
+          </AuthContextProvider>
         </WagmiConfig>
       </QueryClientProvider>
     );
@@ -69,11 +70,11 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <QueryClientProvider client={queryClient}>
       <WagmiConfig config={wagmiConfig}>
-        <RainbowKitProvider chains={chains} theme={midnightTheme()}>
+        <AuthContextProvider>
           <NavBar />
           <Component {...pageProps} />
           <Toaster />
-        </RainbowKitProvider>
+        </AuthContextProvider>
       </WagmiConfig>
     </QueryClientProvider>
   );

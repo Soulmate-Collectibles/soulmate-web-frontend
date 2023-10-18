@@ -1,9 +1,15 @@
 import { useQuery } from 'react-query';
 
-const fetchDrops = async () => {
+const fetchDrops = async (address: string) => {
+  const jwt = window.localStorage.getItem('jwt');
   try {
     const res = await fetch(
-      'http://localhost:3001/users/0xf5aBFa16a9B44Bb2a1ece4B08dd85Ab68f5a282f'
+      `http://localhost:3001/users/0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266`,
+      {
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+        },
+      }
     );
     const json = await res.json();
     return json;
@@ -12,8 +18,8 @@ const fetchDrops = async () => {
   }
 };
 
-const useDrops = () => {
-  return useQuery('drops', fetchDrops);
+const useDrops = (address: string) => {
+  return useQuery('drops', () => fetchDrops(address));
 };
 
 export { useDrops };

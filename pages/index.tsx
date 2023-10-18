@@ -11,31 +11,21 @@ import { NavBar } from '@components/sections/Navbar';
 import { Drops } from '@components/sections/Drops';
 import { Poaps } from '@components/sections/Poaps';
 import Head from 'next/head';
+import { useAuthContext } from '@context/auth/AuthContext';
 
 const Home: NextPage = () => {
-  const { push, query, ...router } = useRouter();
-  const [user, setUser] = useState<{ address: string; drops: any[] }>(
-    {} as any
-  );
-  const [loading, setLoading] = useState(false);
-  /* const { status } = useAccount({
-    onDisconnect: () => {
-      push('/login');
-    },
-  }); */
+  const router = useRouter();
+  const { address, jwt } = useAuthContext();
   const { mounted } = useMount(() => router.replace(router.asPath));
 
   if (!mounted.current) return null;
 
-  /* if (status === 'disconnected') {
-    push('/login');
-    return null;
+  if (!jwt) {
+    router.push('/login');
   }
 
-  if (status !== 'connected') {
-    return <Connecting />;
-  }
- */
+  console.log(address);
+
   return (
     <>
       <Head>

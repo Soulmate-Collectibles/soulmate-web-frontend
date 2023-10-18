@@ -19,7 +19,8 @@
       "@components/*": ["components/*"],
       "@utils": ["lib/utils"],
       "@images/*": ["public/images/*"],
-      "@constants/*": ["constants/*"]
+      "@constants/*": ["constants/*"],
+      "@context/*": ["context/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "ethereum.d.ts"],

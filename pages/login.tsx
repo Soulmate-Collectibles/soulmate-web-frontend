@@ -3,7 +3,6 @@ import logo from '@images/Logo.png';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useAccount } from 'wagmi';
 import { useRouter } from 'next/router';
-import { useRouter as useNavRouter } from 'next/navigation';
 import { useMount } from 'hooks/useMount';
 import Head from 'next/head';
 import { Button } from '@components/ui/button';
@@ -12,19 +11,24 @@ import { ethers } from 'ethers';
 import { useGetNonce } from 'hooks/query/user/useGetNonce';
 import { useCreateUser } from 'hooks/mutation/user/useCreateUser';
 import { useToast } from '@components/ui/use-toast';
+import { useAuthContext } from '@context/auth/AuthContext';
+import { useGetJwt } from 'hooks/query/auth/useGetJwt';
 
 const Login = () => {
   const { toast } = useToast();
   const router = useRouter();
-  const navRouter = useNavRouter();
   const { mounted } = useMount(() => router.replace(router.asPath));
-  const [address, setAddress] = useState('');
-  const [signedMessage, setSignedMessage] = useState('');
-  const [message, setMessage] = useState('');
+  const { address, nonce, setAddress, setNonce, setJwt } = useAuthContext();
   const [txSigner, setTxSigner] = useState<ethers.Signer>();
+  const [signedMessage, setSignedMessage] = useState<string>('');
 
-  const { isLoading, refetch: getNonce } = useGetNonce(address);
-  const mutation = useCreateUser();
+  const { isLoading: isNonceLoading, refetch: getNonce } = useGetNonce(address);
+  const { isLoading: isUserLoading, ...mutation } = useCreateUser();
+  const { isLoading: isJwtLoading, refetch: getJwt } = useGetJwt({
+    address,
+    nonce,
+    signedMessage,
+  });
 
   const { isConnecting } = useAccount({
     onConnect: () => {
@@ -33,8 +37,6 @@ const Login = () => {
       });
     },
   });
-
-  const { address: accountAddress } = useAccount();
 
   const getAccountInfo = async () => {
     if (typeof window.ethereum !== 'undefined') {
@@ -59,28 +61,43 @@ const Login = () => {
       if (address) {
         const { data: response } = await getNonce();
         if (response && response.nonce) {
-          setMessage(response.nonce);
+          setNonce(response.nonce);
         } else {
           await mutation.mutateAsync({ address });
-          setMessage(mutation.data?.nonce);
+          setNonce(mutation.data?.nonce);
         }
 
         try {
-          const signedMessage = await txSigner?.signMessage(response.nonce);
-          if (signedMessage) navRouter.push('/');
+          const signed = await txSigner?.signMessage(response.nonce);
+          if (signed) {
+            setSignedMessage(signed);
+          }
         } catch (e) {
           toast({
             title: 'Houston, tenemos un problema',
             description: 'Se ha rechazado la firma del mensaje',
           });
         }
-
-        console.log('account address', accountAddress);
       }
     };
     getAccount();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [address, router]);
+  }, [address]);
+
+  useEffect(() => {
+    const getAccessToken = async () => {
+      if (signedMessage) {
+        const { data: jwtResponse } = await getJwt();
+        if (jwtResponse && jwtResponse.access_token) {
+          setJwt(jwtResponse.access_token);
+          router.push('/');
+        }
+      }
+    };
+
+    getAccessToken();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [signedMessage]);
 
   if (!mounted.current) return null;
 
@@ -98,7 +115,10 @@ const Login = () => {
           {/* <ConnectButton
             label={isConnecting ? 'Conectando...' : 'Inicia sesión'}
           /> */}
-          <Button onClick={getAccountInfo} disabled={isLoading}>
+          <Button
+            onClick={getAccountInfo}
+            disabled={isNonceLoading || isUserLoading || isJwtLoading}
+          >
             Iniciar sesión
           </Button>
         </div>

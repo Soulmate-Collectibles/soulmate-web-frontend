@@ -5,11 +5,13 @@ import { useState } from 'react';
 import { AiFillDelete } from 'react-icons/ai';
 import { useDeleteAllDrops } from 'hooks/mutation/drops/useDeleteAllDrops';
 import { AppAlert } from '@components/alert/AppAlert';
+import { useAuthContext } from '@context/auth/AuthContext';
 
 const Drops = () => {
   const [open, setOpen] = useState(false);
   const [alertOpen, setAlertOpen] = useState(false);
-  const { isLoading, data, refetch } = useDrops();
+  const { address } = useAuthContext();
+  const { isLoading, data, refetch } = useDrops(address);
   const mutation = useDeleteAllDrops({
     onSuccess: async () => {
       await refetch?.();
