@@ -81,27 +81,22 @@ const CreateDrop = ({
   });
 
   function onSubmit(data: z.infer<typeof CreateDropSchema>) {
+    type Keys = keyof typeof data;
     const formData = new FormData();
 
-    // Append the image to formData
     if (data.image && data.image.size > 0) {
       formData.append('image', data.image);
     }
 
-    // Append other fields
     for (let key in data) {
       if (key !== 'image') {
-        // Exclude the image since we already appended it
         if (['startDate', 'endDate'].includes(key)) {
-          // format to ISO 8601 date string
-          formData.append(key, data[key as keyof typeof data].toISOString());
+          formData.append(key, data[key as Keys].toISOString());
         } else {
-          formData.append(key, data[key as keyof typeof data]);
+          formData.append(key, data[key as Keys]);
         }
       }
     }
-
-    formData.set('totalAmount', `${data.totalAmount}`);
 
     mutation.mutate(formData);
   }
@@ -168,7 +163,7 @@ const CreateDrop = ({
                         className='col-span-3'
                         onChange={(e) => {
                           if (e.target.files?.[0]) {
-                            onChange(e.target.files[0]); // Send the File object to react-hook-form
+                            onChange(e.target.files[0]);
                           }
                         }}
                         {...otherFieldProps}
@@ -251,6 +246,23 @@ const CreateDrop = ({
                       />
                     </PopoverContent>
                   </Popover>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name='totalAmount'
+              render={({ field }) => (
+                <FormItem className='grid grid-cols-4 items-center gap-4'>
+                  <FormLabel>Amount of uses</FormLabel>
+                  <FormControl>
+                    <Input
+                      type='number'
+                      autoComplete='off'
+                      className='col-span-3'
+                      {...field}
+                    />
+                  </FormControl>
                 </FormItem>
               )}
             />

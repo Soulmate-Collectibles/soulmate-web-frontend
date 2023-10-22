@@ -1,18 +1,20 @@
 import { useMutation } from 'react-query';
 
-const editDrop = async (drop: any) => {
+const editDrop = async (drop: FormData) => {
+  const jwt = window.localStorage.getItem('jwt');
   try {
-    const res = await fetch(`http://localhost:3001/drops/${drop.id}`, {
+    const res = await fetch(`http://localhost:3001/drops/${drop.get('id')}`, {
       method: 'PATCH',
       headers: {
-        'Content-Type': 'application/json',
+        Authorization: `Bearer ${jwt}`,
       },
-      body: JSON.stringify(drop),
+      body: drop,
     });
     if (!res.ok) {
-      throw new Error(res.statusText);
+      const response = await res.json();
+      throw new Error(response.message);
     }
-  } catch (err) {
+  } catch (err: any) {
     throw err;
   }
 };
@@ -22,7 +24,7 @@ const useEditDrop = ({
   onError,
 }: {
   onSuccess?: () => void;
-  onError?: () => void;
+  onError?: (e?: any) => void;
 }) => {
   return useMutation({ mutationFn: editDrop, onSuccess, onError });
 };

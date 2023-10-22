@@ -16,6 +16,16 @@ import {
 import * as z from 'zod';
 import { useEditDrop } from 'hooks/mutation/drops/useEditDrop';
 import { EditDropSchema } from '@components/extra/ItemList';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@components/ui/popover';
+import { cn } from '@utils';
+import { format } from 'date-fns';
+import { CalendarIcon } from 'lucide-react';
+import { Calendar } from '@components/ui/calendar';
+import { useToast } from '@components/ui/use-toast';
 
 const EditDrop = ({
   item,
@@ -30,18 +40,39 @@ const EditDrop = ({
   refetch?: () => Promise<any>;
   form: any;
 }) => {
+  const { toast } = useToast();
   const mutation = useEditDrop({
     onSuccess: async () => {
       await refetch?.();
       setOpen(false);
     },
-    onError: async () => {
-      console.log('AAAAAAAAAAAAAAA');
+    onError: async (e) => {
+      toast({
+        title: "Houston, we've got a problem!",
+        description: `${e.message}`,
+      });
     },
   });
 
   function onSubmit(data: z.infer<typeof EditDropSchema>) {
-    mutation.mutate({ ...data, id: item.id });
+    type Keys = keyof typeof data;
+    const formData = new FormData();
+
+    if (data.image && data.image.size > 0) {
+      formData.append('image', data.image);
+    }
+
+    for (let key in data) {
+      if (key !== 'image') {
+        if (['startDate', 'endDate'].includes(key)) {
+          formData.append(key, data[key as Keys].toISOString());
+        } else {
+          formData.append(key, data[key as Keys]);
+        }
+      }
+    }
+    formData.append('id', item.id);
+    mutation.mutate(formData);
   }
 
   return (
@@ -88,18 +119,119 @@ const EditDrop = ({
             <FormField
               control={form.control}
               name='image'
+              render={({ field }) => {
+                const { onChange, value, ...otherFieldProps } = field;
+                return (
+                  <FormItem className='grid grid-cols-4 items-center gap-4'>
+                    <FormLabel>Image</FormLabel>
+                    <FormControl>
+                      <Input
+                        type='file'
+                        autoComplete='off'
+                        accept='image/png, image/gif'
+                        className='col-span-3'
+                        onChange={(e) => {
+                          if (e.target.files?.[0]) {
+                            onChange(e.target.files[0]);
+                          }
+                        }}
+                        {...otherFieldProps}
+                      />
+                    </FormControl>
+                  </FormItem>
+                );
+              }}
+            />
+            <FormField
+              control={form.control}
+              name='startDate'
               render={({ field }) => (
                 <FormItem className='grid grid-cols-4 items-center gap-4'>
-                  <FormLabel>Image</FormLabel>
+                  <FormLabel>Start date</FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant={'outline'}
+                          className={cn(
+                            'col-span-3',
+                            !field.value && 'text-muted-foreground'
+                          )}
+                        >
+                          {field.value ? (
+                            format(field.value, 'PPP')
+                          ) : (
+                            <span>Pick a date</span>
+                          )}
+                          <CalendarIcon className='ml-auto h-4 w-4 opacity-50' />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className='w-auto p-0' align='start'>
+                      <Calendar
+                        mode='single'
+                        selected={field.value}
+                        onSelect={field.onChange}
+                        disabled={(date) => date < new Date()}
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name='endDate'
+              render={({ field }) => (
+                <FormItem className='grid grid-cols-4 items-center gap-4'>
+                  <FormLabel>End date</FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant={'outline'}
+                          className={cn(
+                            'col-span-3',
+                            !field.value && 'text-muted-foreground'
+                          )}
+                        >
+                          {field.value ? (
+                            format(field.value, 'PPP')
+                          ) : (
+                            <span>Pick a date</span>
+                          )}
+                          <CalendarIcon className='ml-auto h-4 w-4 opacity-50' />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className='w-auto p-0' align='start'>
+                      <Calendar
+                        mode='single'
+                        selected={field.value}
+                        onSelect={field.onChange}
+                        disabled={(date) => date < new Date()}
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name='totalAmount'
+              render={({ field }) => (
+                <FormItem className='grid grid-cols-4 items-center gap-4'>
+                  <FormLabel>Amount of uses</FormLabel>
                   <FormControl>
                     <Input
-                      id='image'
-                      /* type='file' */ autoComplete='off'
+                      type='number'
+                      autoComplete='off'
                       className='col-span-3'
                       {...field}
                     />
                   </FormControl>
-                  <FormMessage />
                 </FormItem>
               )}
             />

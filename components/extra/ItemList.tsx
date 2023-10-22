@@ -12,11 +12,27 @@ import * as z from 'zod';
 import { AppTooltip } from '@components/tootlip/AppTooltip';
 import { AppAlert } from '@components/alert/AppAlert';
 import { useDeleteDrop } from 'hooks/mutation/drops/useDeleteAllDrops';
+import { MAX_FILE_SIZE } from '@constants/file-validation';
 
 export const EditDropSchema = z.object({
-  title: z.string().min(4).max(30),
-  description: z.string().max(300),
-  image: z.string(),
+  title: z.string().min(4).max(30).optional(),
+  description: z.string().max(300).optional(),
+  image: z
+    .any()
+    .optional()
+    .refine(
+      (file) => {
+        if (file) return file?.size <= MAX_FILE_SIZE;
+        return true;
+      },
+      {
+        message: 'File size should be less than 4MB',
+        path: ['file'],
+      }
+    ),
+  startDate: z.date().optional(),
+  endDate: z.date().optional(),
+  totalAmount: z.string().optional(),
 });
 
 const ItemList = ({
@@ -71,7 +87,13 @@ const ItemList = ({
                             setEditItem(item);
                             form.setValue('title', item.title);
                             form.setValue('description', item.description);
-                            form.setValue('image', item.image);
+                            form.setValue(
+                              'startDate',
+                              new Date(item.startDate)
+                            );
+                            form.setValue('endDate', new Date(item.endDate));
+                            form.setValue('totalAmount', `${item.totalAmount}`);
+                            form.setValue('image', '');
                             setOpen(true);
                           }}
                         >
