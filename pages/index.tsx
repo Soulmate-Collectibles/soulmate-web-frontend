@@ -1,21 +1,18 @@
-import { ConnectButton } from '@rainbow-me/rainbowkit';
+'use client';
+
 import type { NextPage } from 'next';
-import { useAccount } from 'wagmi';
-import Link from 'next/link';
-import { Logo } from '../logos/Logo';
 import { useRouter } from 'next/router';
 import { useMount } from 'hooks/useMount';
-import { Connecting } from '@components/extra/Connecting';
-import { useState } from 'react';
-import { NavBar } from '@components/sections/Navbar';
 import { Drops } from '@components/sections/Drops';
 import { Poaps } from '@components/sections/Poaps';
 import Head from 'next/head';
 import { useAuthContext } from '@context/auth/AuthContext';
+import useLocalStorage from 'hooks/storage/useLocalStorage';
 
 const Home: NextPage = () => {
   const router = useRouter();
-  const { address, jwt } = useAuthContext();
+  const { address } = useAuthContext();
+  const { jwt } = useAuthContext();
   const { mounted } = useMount(() => router.replace(router.asPath));
 
   if (!mounted.current) return null;
@@ -23,8 +20,6 @@ const Home: NextPage = () => {
   if (!jwt) {
     router.push('/login');
   }
-
-  console.log(address);
 
   return (
     <>

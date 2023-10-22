@@ -2,25 +2,12 @@ import { CreateDrop } from '@components/dialogs/CreateDrop';
 import { useDrops } from 'hooks/query/drops/useDrops';
 import ItemList from '@components/extra/ItemList';
 import { useState } from 'react';
-import { AiFillDelete } from 'react-icons/ai';
-import { useDeleteAllDrops } from 'hooks/mutation/drops/useDeleteAllDrops';
-import { AppAlert } from '@components/alert/AppAlert';
 import { useAuthContext } from '@context/auth/AuthContext';
 
 const Drops = () => {
   const [open, setOpen] = useState(false);
-  const [alertOpen, setAlertOpen] = useState(false);
   const { address } = useAuthContext();
   const { isLoading, data, refetch } = useDrops(address);
-  const mutation = useDeleteAllDrops({
-    onSuccess: async () => {
-      await refetch?.();
-    },
-    onError: async () => {
-      setOpen(false);
-      console.log('AAAAAAAAAAAAAAA');
-    },
-  });
 
   return (
     <>
@@ -35,12 +22,6 @@ const Drops = () => {
             </p>
           </div>
           <div className='flex flex-col items-end justify-center gap-1 pr-4'>
-            <button
-              className='flex justify-center items-center gap-1 pr-4 hover:underline'
-              onClick={() => setAlertOpen(true)}
-            >
-              <AiFillDelete /> Delete all
-            </button>
             <CreateDrop open={open} setOpen={setOpen} refetch={refetch} />
           </div>
         </div>
@@ -53,16 +34,6 @@ const Drops = () => {
           refetch={refetch}
         />
       </section>
-      <AppAlert
-        open={alertOpen}
-        setOpen={setAlertOpen}
-        title='Are you sure you want to delete all drops?'
-        description='This action cannot be undone.'
-        onAccept={() => {
-          mutation.mutate('0x5B38Da6a701c568545dCfcB03FcB875f56beddC4');
-        }}
-        loading={mutation.isLoading}
-      />
     </>
   );
 };

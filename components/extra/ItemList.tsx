@@ -10,6 +10,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { AppTooltip } from '@components/tootlip/AppTooltip';
+import { AppAlert } from '@components/alert/AppAlert';
+import { useDeleteDrop } from 'hooks/mutation/drops/useDeleteAllDrops';
 
 export const EditDropSchema = z.object({
   title: z.string().min(4).max(30),
@@ -33,7 +35,20 @@ const ItemList = ({
   isDeletable?: boolean;
 }) => {
   const [open, setOpen] = useState(false);
+  const [alertOpen, setAlertOpen] = useState(false);
   const [editItem, setEditItem] = useState<any>({});
+  const [dropId, setDropId] = useState<string>('');
+
+  const mutation = useDeleteDrop({
+    onSuccess: async () => {
+      await refetch?.();
+      setAlertOpen(false);
+    },
+    onError: async () => {
+      setAlertOpen(false);
+      console.log('AAAAAAAAAAAAAAA');
+    },
+  });
 
   const form = useForm<z.infer<typeof EditDropSchema>>({
     resolver: zodResolver(EditDropSchema),
@@ -64,17 +79,15 @@ const ItemList = ({
                         </button>
                       ) : null}
                       {isDeletable ? (
-                        <AppTooltip
-                          content={
-                            <p className='font-normal'>
-                              This functionality is yet to be implemented
-                            </p>
-                          }
+                        <div
+                          className='cursor-pointer'
+                          onClick={() => {
+                            setDropId(item.id);
+                            setAlertOpen(true);
+                          }}
                         >
-                          <div className='cursor-not-allowed'>
-                            <AiOutlineDelete />
-                          </div>
-                        </AppTooltip>
+                          <AiOutlineDelete />
+                        </div>
                       ) : null}
                     </div>
                   </CardTitle>
@@ -114,7 +127,13 @@ const ItemList = ({
               </Card>
             ))
           ) : (
-            <Skeleton className='px-2 mb-4 mr-4' />
+            <div className='flex items-center space-x-4'>
+              <Skeleton className='h-12 w-12 rounded-full' />
+              <div className='space-y-2'>
+                <Skeleton className='h-4 w-[250px]' />
+                <Skeleton className='h-4 w-[200px]' />
+              </div>
+            </div>
           )}
         </ScrollArea>
       </div>
@@ -124,6 +143,16 @@ const ItemList = ({
         open={open}
         setOpen={setOpen}
         refetch={refetch}
+      />
+      <AppAlert
+        open={alertOpen}
+        setOpen={setAlertOpen}
+        title='Are you sure you want to delete this drop?'
+        description='This action cannot be undone.'
+        onAccept={() => {
+          mutation.mutate(dropId);
+        }}
+        loading={mutation.isLoading}
       />
     </>
   );

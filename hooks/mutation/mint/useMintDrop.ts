@@ -1,7 +1,6 @@
 import { useMutation } from 'react-query';
 
 const mintDrop = async (mint: any) => {
-  console.log(mint);
   try {
     const res = await fetch(`http://localhost:3001/mintlinks/${mint.id}`, {
       method: 'PATCH',

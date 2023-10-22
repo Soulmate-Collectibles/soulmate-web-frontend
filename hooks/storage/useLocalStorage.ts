@@ -1,34 +1,42 @@
-import { useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 
-export function useLocalStorage(key: string, initialValue?: any) {
-  const [storedValue, setStoredValue] = useState(() => {
+export default function useLocalStorage<T>(
+  key: string,
+  defaultValue: T
+): [T, Dispatch<SetStateAction<T>>] {
+  const isMounted = useRef(false);
+  const [value, setValue] = useState<T | any>(defaultValue);
+
+  useEffect(() => {
     try {
       const item = window.localStorage.getItem(key);
-      return item ? JSON.parse(item) : initialValue;
-    } catch (error) {
-      return initialValue;
+      if (item) {
+        let parsedItem = null;
+        try {
+          parsedItem = JSON.parse(item);
+        } catch (e) {
+          parsedItem = item;
+        }
+        setValue(parsedItem);
+      }
+    } catch (e) {
+      console.log(e);
     }
-  });
+    return () => {
+      isMounted.current = false;
+    };
+  }, [key]);
 
-  const setValue = (value: any) => {
-    try {
-      setStoredValue(value);
+  useEffect(() => {
+    if (isMounted.current) {
       window.localStorage.setItem(
         key,
         typeof value === 'object' ? JSON.stringify(value) : value
       );
-    } catch (error) {
-      // console.error(error);
+    } else {
+      isMounted.current = true;
     }
-  };
+  }, [key, value]);
 
-  const removeValue = () => {
-    try {
-      window.localStorage.removeItem(key);
-    } catch (error) {
-      //
-    }
-  };
-
-  return [storedValue, setValue, removeValue];
+  return [value, setValue];
 }

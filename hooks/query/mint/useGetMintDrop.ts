@@ -5,7 +5,6 @@ const fetchDropByMintlink = async (id: UUID) => {
   if (!id) return;
   try {
     const url = `http://localhost:3001/mintlinks/${id}`;
-    console.log('fetching drop', url);
     const res = await fetch(url);
     if (!res.ok) {
       throw new Error(res.statusText);

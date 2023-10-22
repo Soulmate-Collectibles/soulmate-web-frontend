@@ -1,6 +1,5 @@
 import Image from 'next/image';
 import logo from '@images/Logo.png';
-import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useAccount } from 'wagmi';
 import { useRouter } from 'next/router';
 import { useMount } from 'hooks/useMount';

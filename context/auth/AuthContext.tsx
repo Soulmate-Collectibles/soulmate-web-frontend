@@ -1,4 +1,4 @@
-import { useLocalStorage } from 'hooks/storage/useLocalStorage';
+import useLocalStorage from 'hooks/storage/useLocalStorage';
 import {
   Dispatch,
   SetStateAction,

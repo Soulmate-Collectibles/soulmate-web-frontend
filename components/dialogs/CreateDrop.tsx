@@ -80,8 +80,6 @@ const CreateDrop = ({
     },
   });
 
-  console.log(form.formState.errors);
-
   function onSubmit(data: z.infer<typeof CreateDropSchema>) {
     const formData = new FormData();
 
@@ -104,10 +102,6 @@ const CreateDrop = ({
     }
 
     formData.set('totalAmount', `${data.totalAmount}`);
-    formData.set(
-      'creatorAddress',
-      '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266'
-    );
 
     mutation.mutate(formData);
   }
@@ -214,9 +208,7 @@ const CreateDrop = ({
                         mode='single'
                         selected={field.value}
                         onSelect={field.onChange}
-                        disabled={(date) =>
-                          date > new Date() || date < new Date('1900-01-01')
-                        }
+                        disabled={(date) => date < new Date()}
                         initialFocus
                       />
                     </PopoverContent>
@@ -254,9 +246,7 @@ const CreateDrop = ({
                         mode='single'
                         selected={field.value}
                         onSelect={field.onChange}
-                        disabled={(date) =>
-                          date > new Date() || date < new Date('1900-01-01')
-                        }
+                        disabled={(date) => date < new Date()}
                         initialFocus
                       />
                     </PopoverContent>
