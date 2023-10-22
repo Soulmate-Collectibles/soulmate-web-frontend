@@ -1,11 +1,13 @@
 import { useMutation } from 'react-query';
 
 const mintDrop = async (mint: any) => {
+  const jwt = window.localStorage.getItem('jwt');
   try {
     const res = await fetch(`http://localhost:3001/mintlinks/${mint.id}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
+        Authorization: `Bearer ${jwt}`,
       },
       body: JSON.stringify(mint),
     });
