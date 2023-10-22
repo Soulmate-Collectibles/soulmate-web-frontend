@@ -36,7 +36,7 @@ const NavBar = () => {
         ))}
       </div>
       <div className='flex flex-1 justify-end'>
-        <Button onClick={handleLogout}>Cerrar sesión</Button>
+        <Button onClick={handleLogout}>Logout</Button>
       </div>
     </div>
   );
