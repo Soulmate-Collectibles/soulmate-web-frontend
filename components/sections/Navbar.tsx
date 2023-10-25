@@ -1,18 +1,19 @@
 import { Button } from '@components/ui/button';
 import { routes } from '@constants/routes';
-import { ConnectButton } from '@rainbow-me/rainbowkit';
+import { useAuthContext } from '@context/auth/AuthContext';
 import { useLocalStorage } from 'hooks/storage/useLocalStorage';
 import { Logo } from 'logos/Logo';
-import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 
 const NavBar = () => {
   const router = useRouter();
-
+  const { setAddress, setNonce } = useAuthContext();
   const [, , removeJwt] = useLocalStorage('jwt');
 
   const handleLogout = () => {
+    setAddress('');
+    setNonce('');
     removeJwt();
     router.push('/login');
   };

@@ -1,3 +1,4 @@
+import { ethers } from 'ethers';
 import { useLocalStorage } from 'hooks/storage/useLocalStorage';
 import {
   Dispatch,
@@ -14,6 +15,8 @@ interface AuthContextProps {
   setNonce: Dispatch<SetStateAction<string>>;
   jwt: string;
   setJwt: (value: any) => void;
+  txSigner: ethers.Signer | undefined;
+  setTxSigner: Dispatch<SetStateAction<ethers.Signer | undefined>>;
 }
 
 const AuthContext = createContext<AuthContextProps>({} as AuthContextProps);
@@ -28,6 +31,7 @@ const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
   const [address, setAddress] = useState('');
   const [nonce, setNonce] = useState('');
   const [jwt, setJwt] = useLocalStorage('jwt', '');
+  const [txSigner, setTxSigner] = useState<ethers.Signer | undefined>();
 
   return (
     <AuthContext.Provider
@@ -38,6 +42,8 @@ const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
         setNonce,
         jwt,
         setJwt,
+        txSigner,
+        setTxSigner,
       }}
     >
       {children}

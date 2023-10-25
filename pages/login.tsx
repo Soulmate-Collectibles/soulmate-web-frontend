@@ -12,13 +12,21 @@ import { useCreateUser } from 'hooks/mutation/user/useCreateUser';
 import { useToast } from '@components/ui/use-toast';
 import { useAuthContext } from '@context/auth/AuthContext';
 import { useGetJwt } from 'hooks/query/auth/useGetJwt';
+import { set } from 'date-fns';
 
 const Login = () => {
   const { toast } = useToast();
   const router = useRouter();
   const { mounted } = useMount(() => router.replace(router.asPath));
-  const { address, nonce, setAddress, setNonce, setJwt } = useAuthContext();
-  const [txSigner, setTxSigner] = useState<ethers.Signer>();
+  const {
+    address,
+    nonce,
+    setAddress,
+    setNonce,
+    setJwt,
+    txSigner,
+    setTxSigner,
+  } = useAuthContext();
   const [signedMessage, setSignedMessage] = useState<string>('');
 
   const { isLoading: isNonceLoading, refetch: getNonce } = useGetNonce(address);
@@ -27,14 +35,6 @@ const Login = () => {
     address,
     nonce,
     signedMessage,
-  });
-
-  const { isConnecting } = useAccount({
-    onConnect: () => {
-      router.push({
-        pathname: '/',
-      });
-    },
   });
 
   const getAccountInfo = async () => {
@@ -46,6 +46,8 @@ const Login = () => {
       setTxSigner(signer);
 
       const signerAddress = await signer.getAddress();
+      // setAddress('0xf5aBFa16a9B44Bb2a1ece4B08dd85Ab68f5a282f');
+      console.log('got address', signerAddress);
       setAddress(signerAddress);
     } else {
       toast({
@@ -57,25 +59,16 @@ const Login = () => {
 
   useEffect(() => {
     const getAccount = async () => {
-      if (address) {
+      if (!!address) {
         const { data: response } = await getNonce();
         if (response && response.nonce) {
           setNonce(response.nonce);
+          console.log('got nonce 1');
         } else {
-          await mutation.mutateAsync({ address });
-          setNonce(mutation.data?.nonce);
-        }
-
-        try {
-          const signed = await txSigner?.signMessage(response.nonce);
-          if (signed) {
-            setSignedMessage(signed);
-          }
-        } catch (e) {
-          toast({
-            title: 'Houston, tenemos un problema',
-            description: 'Se ha rechazado la firma del mensaje',
-          });
+          console.log('trying to get nonce 2');
+          const { data: nonce } = await mutation.mutateAsync({ address });
+          setNonce(nonce);
+          console.log('got nonce 2');
         }
       }
     };
@@ -84,10 +77,34 @@ const Login = () => {
   }, [address]);
 
   useEffect(() => {
+    const signMessage = async () => {
+      if (nonce) {
+        try {
+          console.log('signing message');
+          const signed = await txSigner?.signMessage(nonce);
+          if (signed) {
+            setSignedMessage(signed);
+            console.log('signed message');
+          }
+        } catch (e) {
+          toast({
+            title: "Houston, we've got a problem",
+            description: 'Signing has been rejected!',
+          });
+        }
+      }
+    };
+    signMessage();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [nonce]);
+
+  useEffect(() => {
     const getAccessToken = async () => {
       if (signedMessage) {
+        console.log('getting jwt');
         const { data: jwtResponse } = await getJwt();
         if (jwtResponse && jwtResponse.access_token) {
+          console.log('got jwt');
           setJwt(jwtResponse.access_token);
           router.push('/');
         }

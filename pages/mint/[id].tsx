@@ -78,9 +78,9 @@ const MintPage = () => {
         <title>Minting | Soulmate Collectibles</title>
       </Head>
       <div className='h-full'>
-        <div style={styles.container}>
-          <div style={styles.squaresContainer}>
-            <div style={styles.square}>
+        <div className='flex justify-center items-center h-[calc(100vh-4rem)]'>
+          <div className='flex'>
+            <div className='w-[400px] h-[400px] p-5 bg-white m-2.5 flex flex-col items-center justify-center border border-black'>
               <h1 className='scroll-m-20 text-4xl font-bold tracking-tight mb-5'>
                 Mint your drop
               </h1>
@@ -92,12 +92,12 @@ const MintPage = () => {
                 {mutation.isLoading ? 'Minting...' : 'Mint drop'}
               </Button>
             </div>
-            <div style={styles.square}>
+            <div className='w-[400px] h-[400px] p-5 bg-white m-2.5 flex flex-col items-center justify-center border border-black'>
               {isLoading ? (
                 <p>Cargando...</p>
               ) : (
                 <>
-                  <h1 className='scroll-m-20 text-4xl font-bold tracking-tight mb-5'>
+                  <h1 className='scroll-m-20 text-4xl font-bold tracking-tight mb-5 text-center'>
                     {data?.drop?.title}
                   </h1>
                   <p>
@@ -113,38 +113,6 @@ const MintPage = () => {
       </div>
     </>
   );
-};
-
-const styles = {
-  container: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: 'calc(100vh - 4rem)',
-  },
-  squaresContainer: {
-    display: 'flex',
-  },
-  square: {
-    width: '400px',
-    height: '400px',
-    padding: '20px',
-    backgroundColor: '#ffffff',
-    margin: '10px',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    border: '1px solid #000000',
-  },
-  button: {
-    marginTop: '10px',
-  },
-  image: {
-    width: '100%',
-    height: '100%',
-    objectFit: 'cover',
-  },
 };
 
 export default MintPage;
