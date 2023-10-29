@@ -11,7 +11,9 @@ import { useAuthContext } from '@context/auth/AuthContext';
 const Home: NextPage = () => {
   const router = useRouter();
   const { jwt } = useAuthContext();
-  const { mounted } = useMount(() => router.replace(router.asPath));
+  const { mounted } = useMount(() => {
+    router.replace(router.asPath);
+  });
 
   if (!mounted.current) return null;
 

@@ -29,6 +29,7 @@ const Drops = () => {
           loading={isLoading}
           items={data?.drops}
           isEditable
+          isDrop
           isDeletable
           hasLink
           refetch={refetch}

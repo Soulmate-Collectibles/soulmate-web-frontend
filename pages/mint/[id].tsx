@@ -1,29 +1,34 @@
+'use client';
+
 import { Button } from '@components/ui/button';
+import { useAuthContext } from '@context/auth/AuthContext';
 import { UUID } from 'crypto';
 import { useMintDrop } from 'hooks/mutation/mint/useMintDrop';
 import { useGetMintDrop } from 'hooks/query/mint/useGetMintDrop';
-import { useMount } from 'hooks/useMount';
+// import { useMount } from 'hooks/useMount';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import {
+import Image from 'next/image';
+/* import {
   useAccount,
   useContractRead,
   useContractWrite,
   usePrepareContractWrite,
   useWaitForTransaction,
-} from 'wagmi';
+} from 'wagmi'; */
 
-const contractConfig = {
+/* const contractConfig = {
   address: '0x86fbbb1254c39602a7b067d5ae7e5c2bdfd61a30',
-  /* abi, */
-} as const;
+  // abi,
+} as const; */
 
 const MintPage = () => {
   const router = useRouter();
-  const { isConnected } = useAccount();
+  // const { isConnected } = useAccount();
 
   const { data, isLoading, refetch } = useGetMintDrop(router.query.id as UUID);
+  const { address } = useAuthContext();
   const mutation = useMintDrop({
     onSuccess: async () => {
       await refetch?.();
@@ -39,7 +44,7 @@ const MintPage = () => {
     }
   }, [router.query.id, refetch]);
 
-  const { mounted } = useMount();
+  /* const { mounted } = useMount();
 
   const { config: contractWriteConfig } = usePrepareContractWrite({
     ...contractConfig,
@@ -60,15 +65,15 @@ const MintPage = () => {
     error: txError,
   } = useWaitForTransaction({
     hash: mintData?.hash,
-  });
+  }); */
 
   const mintDrop = () => {
-    if (!router.query.id) {
+    if (!router.query.id || !address) {
       return;
     }
     mutation.mutate({
       id: router.query.id,
-      remainingUses: `${data?.remainingUses - 1}`,
+      address,
     });
   };
 
@@ -85,26 +90,38 @@ const MintPage = () => {
                 Mint your drop
               </h1>
               <Button
-                disabled={mutation.isLoading}
+                disabled={mutation.isLoading || data?.remainingUses <= 0}
                 variant='outline'
                 onClick={mintDrop}
               >
                 {mutation.isLoading ? 'Minting...' : 'Mint drop'}
               </Button>
             </div>
-            <div className='w-[400px] h-[400px] p-5 bg-white m-2.5 flex flex-col items-center justify-center border border-black'>
+            <div
+              className={`relative w-[400px] h-[400px] p-5 bg-white m-2.5 flex flex-col items-center justify-center border border-black bg-[rgba(255,255,255,0.5)] bg-blend-multiply`}
+            >
               {isLoading ? (
                 <p>Cargando...</p>
               ) : (
                 <>
-                  <h1 className='scroll-m-20 text-4xl font-bold tracking-tight mb-5 text-center'>
-                    {data?.drop?.title}
-                  </h1>
-                  <p>
-                    {mutation.isLoading
-                      ? null
-                      : `Remaining uses: ${data?.remainingUses}`}
-                  </p>
+                  {data?.drop?.image ? (
+                    <div className='absolute inset-0 z-0 blur-md'>
+                      <Image
+                        src={(data?.drop?.image as string).replace(
+                          'ipfs://',
+                          'https://ipfs.io/ipfs/'
+                        )}
+                        layout='fill'
+                        objectFit='cover'
+                        alt='Fondo'
+                      />
+                    </div>
+                  ) : null}
+                  <div className='z-40 text-center'>
+                    <h1 className='scroll-m-20 text-4xl font-bold tracking-tight mb-5 '>
+                      {data?.drop?.title}
+                    </h1>
+                  </div>
                 </>
               )}
             </div>

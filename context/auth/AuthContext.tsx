@@ -28,7 +28,7 @@ interface AuthContextProviderProps {
 }
 
 const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
-  const [address, setAddress] = useState('');
+  const [address, setAddress] = useLocalStorage('address', '');
   const [nonce, setNonce] = useState('');
   const [jwt, setJwt] = useLocalStorage('jwt', '');
   const [txSigner, setTxSigner] = useState<ethers.Signer | undefined>();

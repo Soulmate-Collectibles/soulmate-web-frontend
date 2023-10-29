@@ -1,6 +1,7 @@
+'use client';
+
 import Image from 'next/image';
 import logo from '@images/Logo.png';
-import { useAccount } from 'wagmi';
 import { useRouter } from 'next/router';
 import { useMount } from 'hooks/useMount';
 import Head from 'next/head';
@@ -12,7 +13,6 @@ import { useCreateUser } from 'hooks/mutation/user/useCreateUser';
 import { useToast } from '@components/ui/use-toast';
 import { useAuthContext } from '@context/auth/AuthContext';
 import { useGetJwt } from 'hooks/query/auth/useGetJwt';
-import { set } from 'date-fns';
 
 const Login = () => {
   const { toast } = useToast();

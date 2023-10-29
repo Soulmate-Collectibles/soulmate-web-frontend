@@ -1,3 +1,4 @@
+'use client';
 import { useState } from 'react';
 
 export function useLocalStorage(key: string, initialValue?: any) {
@@ -14,7 +15,8 @@ export function useLocalStorage(key: string, initialValue?: any) {
         return parsedItem;
       }
     } catch (error) {
-      return initialValue;
+      if (initialValue) return initialValue;
+      console.error('no value found for key ', key);
     }
   });
 

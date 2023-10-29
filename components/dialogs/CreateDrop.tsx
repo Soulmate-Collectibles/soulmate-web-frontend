@@ -81,6 +81,14 @@ const CreateDrop = ({
   });
 
   function onSubmit(data: z.infer<typeof CreateDropSchema>) {
+    if (data.endDate < data.startDate) {
+      return toast({
+        title: 'Wait just a second!',
+        description: 'The end date should be after the start date',
+        variant: 'destructive',
+      });
+    }
+
     type Keys = keyof typeof data;
     const formData = new FormData();
 
@@ -108,7 +116,7 @@ const CreateDrop = ({
       dialogTitle='Create your drop'
       dialogTrigger={
         <div className='flex items-center justify-center gap-1 pr-4 hover:underline cursor-pointer'>
-          <AiFillPlusCircle /> Create new drop
+          <AiFillPlusCircle color='primary' /> Create new drop
         </div>
       }
     >
@@ -203,7 +211,6 @@ const CreateDrop = ({
                         mode='single'
                         selected={field.value}
                         onSelect={field.onChange}
-                        disabled={(date) => date < new Date()}
                         initialFocus
                       />
                     </PopoverContent>
@@ -241,7 +248,6 @@ const CreateDrop = ({
                         mode='single'
                         selected={field.value}
                         onSelect={field.onChange}
-                        disabled={(date) => date < new Date()}
                         initialFocus
                       />
                     </PopoverContent>

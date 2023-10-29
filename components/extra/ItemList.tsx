@@ -5,7 +5,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { EditDrop } from '@components/dialogs/EditDrop';
 import { useState } from 'react';
-import { AiFillDelete, AiFillEdit, AiOutlineDelete } from 'react-icons/ai';
+import { AiFillEdit, AiOutlineDelete } from 'react-icons/ai';
+import { GiConfirmed } from 'react-icons/gi';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
@@ -13,6 +14,7 @@ import { AppTooltip } from '@components/tootlip/AppTooltip';
 import { AppAlert } from '@components/alert/AppAlert';
 import { useDeleteDrop } from 'hooks/mutation/drops/useDeleteAllDrops';
 import { MAX_FILE_SIZE } from '@constants/file-validation';
+import { useConfirmDrop } from 'hooks/mutation/drops/useConfirmDrop';
 
 export const EditDropSchema = z.object({
   title: z.string().min(4).max(30).optional(),
@@ -42,6 +44,7 @@ const ItemList = ({
   loading = false,
   refetch,
   isDeletable,
+  isDrop,
 }: {
   items: any[];
   loading: boolean;
@@ -49,6 +52,7 @@ const ItemList = ({
   hasLink?: boolean;
   refetch?: () => Promise<any>;
   isDeletable?: boolean;
+  isDrop?: boolean;
 }) => {
   const [open, setOpen] = useState(false);
   const [alertOpen, setAlertOpen] = useState(false);
@@ -68,6 +72,15 @@ const ItemList = ({
 
   const form = useForm<z.infer<typeof EditDropSchema>>({
     resolver: zodResolver(EditDropSchema),
+  });
+
+  const confirm = useConfirmDrop({
+    onSuccess: async () => {
+      await refetch?.();
+    },
+    onError: async () => {
+      console.log('AAAAAAAAAAAAAAA');
+    },
   });
 
   return (
@@ -97,7 +110,7 @@ const ItemList = ({
                             setOpen(true);
                           }}
                         >
-                          <AiFillEdit />
+                          <AiFillEdit color='#7c3aed' />
                         </button>
                       ) : null}
                       {isDeletable ? (
@@ -108,8 +121,16 @@ const ItemList = ({
                             setAlertOpen(true);
                           }}
                         >
-                          <AiOutlineDelete />
+                          <AiOutlineDelete color='#7c3aed' />
                         </div>
+                      ) : null}
+                      {isDrop && !item.confirmed ? (
+                        <AppTooltip content={<p>Confirm your drop</p>}>
+                          <GiConfirmed
+                            color='#7c3aed'
+                            onClick={() => confirm.mutate(item.id)}
+                          />
+                        </AppTooltip>
                       ) : null}
                     </div>
                   </CardTitle>
@@ -136,9 +157,10 @@ const ItemList = ({
                   ) : null}
                   <div className='flex flex-col gap-2 ml-[20px]'>
                     <p className='text-sm m-0'>{item.description}</p>
-                    {hasLink ? (
+                    {hasLink && item.confirmed ? (
                       <Link
                         href={`/mint/${item.mintlinks[0].id}`}
+                        target='_blank'
                         className='text-sm color-[#0000FF] underline'
                       >
                         Access mintlink
