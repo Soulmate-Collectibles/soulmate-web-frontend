@@ -15,6 +15,7 @@ import { AppAlert } from '@components/alert/AppAlert';
 import { useDeleteDrop } from 'hooks/mutation/drops/useDeleteAllDrops';
 import { MAX_FILE_SIZE } from '@constants/file-validation';
 import { useConfirmDrop } from 'hooks/mutation/drops/useConfirmDrop';
+import { BiLinkExternal } from 'react-icons/bi';
 
 export const EditDropSchema = z.object({
   title: z.string().min(4).max(30).optional(),
@@ -157,14 +158,19 @@ const DropList = ({
                   ) : null}
                   <div className='flex flex-col gap-2 ml-[20px]'>
                     <p className='text-sm m-0'>{item.description}</p>
-                    {hasLink && item.confirmed ? (
+                    {item.confirmed ? (
                       <Link
                         href={`/mint/${item.mintlinks[0].id}`}
-                        className='text-sm color-[#0000FF] underline'
+                        className='text-sm text-primary flex items-center gap-2 hover:text-primary'
                       >
-                        Access mintlink
+                        <BiLinkExternal /> Access mintlink
                       </Link>
-                    ) : null}
+                    ) : (
+                      <p className='text-sm font-bold text-primary'>
+                        You can&apos;t access this drop&apos;s mintlink until
+                        you confirm it.
+                      </p>
+                    )}
                   </div>
                 </CardContent>
               </Card>
