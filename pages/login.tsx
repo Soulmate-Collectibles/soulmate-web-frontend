@@ -127,7 +127,7 @@ const Login = () => {
             onClick={getAccountInfo}
             disabled={isNonceLoading || isUserLoading || isJwtLoading}
           >
-            Iniciar sesión
+            Login
           </Button>
         </div>
       </div>

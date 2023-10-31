@@ -15,13 +15,14 @@ const Drops = () => {
         <div className='flex justify-between items-start'>
           <div className='mb-2'>
             <h2 className='scroll-m-20 text-4xl font-bold tracking-tight'>
-              My Drops
+              Your Drops
             </h2>
             <p className='text-lg text-muted-foreground'>
-              All the drops you&apos;ve createdasdasd
+              This will show you all the drops you have created using this
+              platform.
             </p>
           </div>
-          <div className='flex flex-col items-end justify-center gap-1 pr-4'>
+          <div className='w-72 flex flex-col items-end justify-center gap-1 pr-4'>
             <CreateDrop open={open} setOpen={setOpen} refetch={refetch} />
           </div>
         </div>
