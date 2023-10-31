@@ -50,8 +50,8 @@ const Login = () => {
       setAddress(signerAddress);
     } else {
       toast({
-        title: 'Houston, tenemos un problema',
-        description: `No se ha detectado Metamask en tu navegador`,
+        title: 'Houston, we have a problem',
+        description: `You don't have Metamask installed!`,
       });
     }
   };
@@ -119,7 +119,7 @@ const Login = () => {
           <Image src={logo} alt='Logo' width={70} height={44} />
         </div>
         <div className='bg-white flex flex-col justify-center items-center flex-1 gap-10'>
-          <h1 className='text-2xl font-bold'>Iniciar sesión con Metamask</h1>
+          <h1 className='text-2xl font-bold'>Login with Metamask</h1>
           {/* <ConnectButton
             label={isConnecting ? 'Conectando...' : 'Inicia sesión'}
           /> */}
