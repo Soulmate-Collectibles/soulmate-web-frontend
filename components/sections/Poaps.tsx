@@ -1,10 +1,8 @@
-import ItemList from '@components/extra/ItemList';
+import { NftList } from '@components/extra/NftList';
+import { useGetNfts } from 'hooks/query/nfts/useGetNfts';
 
 const Poaps = () => {
-  const poaps = [
-    { id: 1, title: 'POAP 1', description: 'Description for POAP 1' },
-    { id: 2, title: 'POAP 2', description: 'Description for POAP 2' },
-  ];
+  const { isLoading, data, refetch } = useGetNfts();
 
   return (
     <section className='flex-1 p-4'>
@@ -16,7 +14,7 @@ const Poaps = () => {
           All the POAPs you&apos;re linked to
         </p>
       </div>
-      <ItemList loading={false} items={poaps} />
+      <NftList loading={isLoading} items={data?.result} hasLink />
     </section>
   );
 };

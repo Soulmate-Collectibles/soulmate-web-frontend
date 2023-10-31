@@ -47,7 +47,6 @@ const Login = () => {
 
       const signerAddress = await signer.getAddress();
       // setAddress('0xf5aBFa16a9B44Bb2a1ece4B08dd85Ab68f5a282f');
-      console.log('got address', signerAddress);
       setAddress(signerAddress);
     } else {
       toast({
@@ -63,12 +62,9 @@ const Login = () => {
         const { data: response } = await getNonce();
         if (response && response.nonce) {
           setNonce(response.nonce);
-          console.log('got nonce 1');
         } else {
-          console.log('trying to get nonce 2');
           const { data: nonce } = await mutation.mutateAsync({ address });
           setNonce(nonce);
-          console.log('got nonce 2');
         }
       }
     };
@@ -80,11 +76,9 @@ const Login = () => {
     const signMessage = async () => {
       if (nonce) {
         try {
-          console.log('signing message');
           const signed = await txSigner?.signMessage(nonce);
           if (signed) {
             setSignedMessage(signed);
-            console.log('signed message');
           }
         } catch (e) {
           toast({
@@ -101,10 +95,8 @@ const Login = () => {
   useEffect(() => {
     const getAccessToken = async () => {
       if (signedMessage) {
-        console.log('getting jwt');
         const { data: jwtResponse } = await getJwt();
         if (jwtResponse && jwtResponse.access_token) {
-          console.log('got jwt');
           setJwt(jwtResponse.access_token);
           router.push('/');
         }

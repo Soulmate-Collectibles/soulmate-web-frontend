@@ -37,7 +37,7 @@ export const EditDropSchema = z.object({
   totalAmount: z.string().optional(),
 });
 
-const ItemList = ({
+const DropList = ({
   items,
   isEditable = false,
   hasLink = false,
@@ -160,7 +160,6 @@ const ItemList = ({
                     {hasLink && item.confirmed ? (
                       <Link
                         href={`/mint/${item.mintlinks[0].id}`}
-                        target='_blank'
                         className='text-sm color-[#0000FF] underline'
                       >
                         Access mintlink
@@ -202,4 +201,4 @@ const ItemList = ({
   );
 };
 
-export default ItemList;
+export { DropList };

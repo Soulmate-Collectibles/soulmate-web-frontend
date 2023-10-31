@@ -16,6 +16,10 @@ const mintDrop = async (mint: any) => {
     if (!res.ok) {
       throw new Error(res.statusText);
     }
+    const json = await res.json();
+    console.log(json);
+
+    return json;
   } catch (err) {
     throw err;
   }

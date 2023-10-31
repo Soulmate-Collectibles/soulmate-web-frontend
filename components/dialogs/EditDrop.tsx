@@ -15,7 +15,7 @@ import {
 } from '@components/ui/form';
 import * as z from 'zod';
 import { useEditDrop } from 'hooks/mutation/drops/useEditDrop';
-import { EditDropSchema } from '@components/extra/ItemList';
+import { EditDropSchema } from '@components/extra/DropList';
 import {
   Popover,
   PopoverContent,

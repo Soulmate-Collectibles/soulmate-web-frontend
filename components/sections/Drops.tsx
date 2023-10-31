@@ -1,6 +1,6 @@
 import { CreateDrop } from '@components/dialogs/CreateDrop';
 import { useDrops } from 'hooks/query/drops/useDrops';
-import ItemList from '@components/extra/ItemList';
+import { DropList } from '@components/extra/DropList';
 import { useState } from 'react';
 import { useAuthContext } from '@context/auth/AuthContext';
 
@@ -25,7 +25,7 @@ const Drops = () => {
             <CreateDrop open={open} setOpen={setOpen} refetch={refetch} />
           </div>
         </div>
-        <ItemList
+        <DropList
           loading={isLoading}
           items={data?.drops}
           isEditable

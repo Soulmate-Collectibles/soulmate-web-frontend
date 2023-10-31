@@ -10,6 +10,9 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
+import { useToast } from '@components/ui/use-toast';
+import { BiLinkExternal } from 'react-icons/bi';
+import Link from 'next/link';
 /* import {
   useAccount,
   useContractRead,
@@ -43,6 +46,7 @@ const MintPage = () => {
       refetch();
     }
   }, [router.query.id, refetch]);
+  const { toast } = useToast();
 
   /* const { mounted } = useMount();
 
@@ -67,14 +71,29 @@ const MintPage = () => {
     hash: mintData?.hash,
   }); */
 
-  const mintDrop = () => {
+  const mintDrop = async () => {
     if (!router.query.id || !address) {
       return;
     }
-    mutation.mutate({
+    await mutation.mutateAsync({
       id: router.query.id,
       address,
     });
+    if (mutation.data) {
+      const { data: tx } = mutation;
+      toast({
+        title: 'NFT Minted!',
+        description: (
+          <Link
+            href={`https://sepolia.etherscan.io/tx/${tx.txHash}`}
+            target='_blank'
+            className='flex gap-2 text-primary items-center'
+          >
+            <BiLinkExternal /> Check on Ethercan
+          </Link>
+        ),
+      });
+    }
   };
 
   return (
