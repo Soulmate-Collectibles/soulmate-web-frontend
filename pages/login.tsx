@@ -46,7 +46,6 @@ const Login = () => {
       setTxSigner(signer);
 
       const signerAddress = await signer.getAddress();
-      // setAddress('0xf5aBFa16a9B44Bb2a1ece4B08dd85Ab68f5a282f');
       setAddress(signerAddress);
     } else {
       toast({
@@ -69,7 +68,6 @@ const Login = () => {
       }
     };
     getAccount();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [address]);
 
   useEffect(() => {
@@ -89,7 +87,6 @@ const Login = () => {
       }
     };
     signMessage();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [nonce]);
 
   useEffect(() => {
@@ -104,7 +101,6 @@ const Login = () => {
     };
 
     getAccessToken();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [signedMessage]);
 
   if (!mounted.current) return null;
@@ -120,9 +116,6 @@ const Login = () => {
         </div>
         <div className='bg-white flex flex-col justify-center items-center flex-1 gap-10'>
           <h1 className='text-2xl font-bold'>Login with Metamask</h1>
-          {/* <ConnectButton
-            label={isConnecting ? 'Conectando...' : 'Inicia sesión'}
-          /> */}
           <Button
             onClick={getAccountInfo}
             disabled={isNonceLoading || isUserLoading || isJwtLoading}

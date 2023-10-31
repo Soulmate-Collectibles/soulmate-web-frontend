@@ -2,7 +2,7 @@ import { NftList } from '@components/extra/NftList';
 import { useGetNfts } from 'hooks/query/nfts/useGetNfts';
 
 const Poaps = () => {
-  const { isLoading, data, refetch } = useGetNfts();
+  const { isLoading, data } = useGetNfts();
 
   return (
     <section className='flex-1 p-4'>

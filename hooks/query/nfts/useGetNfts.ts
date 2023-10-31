@@ -20,13 +20,7 @@ const fetchNfts = async () => {
 };
 
 const useGetNfts = () => {
-  return useQuery(
-    'nfts',
-    fetchNfts /* , {
-    staleTime: Infinity,
-    cacheTime: Infinity,
-  } */
-  );
+  return useQuery('nfts', fetchNfts);
 };
 
 export { useGetNfts };

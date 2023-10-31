@@ -9,7 +9,6 @@ const useMount = (fn?: () => void) => {
     return () => {
       mounted.current = false;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return { mounted };

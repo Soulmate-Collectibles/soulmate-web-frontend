@@ -16,7 +16,6 @@ export function useLocalStorage(key: string, initialValue?: any) {
       }
     } catch (error) {
       if (initialValue) return initialValue;
-      console.error('no value found for key ', key);
     }
   });
 

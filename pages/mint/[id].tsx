@@ -5,7 +5,6 @@ import { useAuthContext } from '@context/auth/AuthContext';
 import { UUID } from 'crypto';
 import { useMintDrop } from 'hooks/mutation/mint/useMintDrop';
 import { useGetMintDrop } from 'hooks/query/mint/useGetMintDrop';
-// import { useMount } from 'hooks/useMount';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
@@ -13,22 +12,8 @@ import Image from 'next/image';
 import { useToast } from '@components/ui/use-toast';
 import { BiLinkExternal } from 'react-icons/bi';
 import Link from 'next/link';
-/* import {
-  useAccount,
-  useContractRead,
-  useContractWrite,
-  usePrepareContractWrite,
-  useWaitForTransaction,
-} from 'wagmi'; */
-
-/* const contractConfig = {
-  address: '0x86fbbb1254c39602a7b067d5ae7e5c2bdfd61a30',
-  // abi,
-} as const; */
-
 const MintPage = () => {
   const router = useRouter();
-  // const { isConnected } = useAccount();
 
   const { data, isLoading, refetch } = useGetMintDrop(router.query.id as UUID);
   const { address } = useAuthContext();
@@ -47,29 +32,6 @@ const MintPage = () => {
     }
   }, [router.query.id, refetch]);
   const { toast } = useToast();
-
-  /* const { mounted } = useMount();
-
-  const { config: contractWriteConfig } = usePrepareContractWrite({
-    ...contractConfig,
-    functionName: 'mint',
-  });
-
-  const {
-    data: mintData,
-    write: mint,
-    isLoading: isMintLoading,
-    isSuccess: isMintStarted,
-    error: mintError,
-  } = useContractWrite(contractWriteConfig);
-
-  const {
-    data: txData,
-    isSuccess: isMinted,
-    error: txError,
-  } = useWaitForTransaction({
-    hash: mintData?.hash,
-  }); */
 
   const mintDrop = async () => {
     if (!router.query.id || !address) {
