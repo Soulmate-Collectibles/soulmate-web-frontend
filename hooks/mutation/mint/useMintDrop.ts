@@ -17,8 +17,6 @@ const mintDrop = async (mint: any) => {
       throw new Error(res.statusText);
     }
     const json = await res.json();
-    console.log(json);
-
     return json;
   } catch (err) {
     throw err;
@@ -29,7 +27,7 @@ const useMintDrop = ({
   onSuccess,
   onError,
 }: {
-  onSuccess?: () => void;
+  onSuccess?: (data: any) => void;
   onError?: () => void;
 }) => {
   return useMutation({ mutationFn: mintDrop, onSuccess, onError });

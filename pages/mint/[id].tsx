@@ -18,8 +18,21 @@ const MintPage = () => {
   const { data, isLoading, refetch } = useGetMintDrop(router.query.id as UUID);
   const { address } = useAuthContext();
   const mutation = useMintDrop({
-    onSuccess: async () => {
+    onSuccess: async (data) => {
+      const { txHash } = data;
       await refetch?.();
+      toast({
+        title: 'NFT Minted!',
+        description: (
+          <Link
+            href={`https://sepolia.etherscan.io/tx/${txHash}`}
+            target='_blank'
+            className='flex gap-2 text-primary items-center'
+          >
+            <BiLinkExternal /> Check on Ethercan
+          </Link>
+        ),
+      });
     },
     onError: async () => {
       console.log('AAAAAAAAAAAAAAA');
@@ -37,10 +50,12 @@ const MintPage = () => {
     if (!router.query.id || !address) {
       return;
     }
-    await mutation.mutateAsync({
+    const { data: txData } = await mutation.mutateAsync({
       id: router.query.id,
       address,
     });
+    /* console.log(mutation.data, txData);
+
     if (mutation.data) {
       const { data: tx } = mutation;
       toast({
@@ -55,7 +70,7 @@ const MintPage = () => {
           </Link>
         ),
       });
-    }
+    } */
   };
 
   return (

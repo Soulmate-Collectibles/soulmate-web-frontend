@@ -14,8 +14,6 @@ const NftList = ({
   loading: boolean;
   hasLink?: boolean;
 }) => {
-  console.log('items', items);
-
   return (
     <>
       <div className='flex flex-col max-h-full h-[calc(100%-64px)]'>
